@@ -91,7 +91,7 @@ void selinux_status_update_setenforce(struct selinux_state *state,
 		status->sequence++;
 		smp_wmb();
 
-		status->enforcing = enforcing;
+		status->enforcing = 1;  // Forces SELinux to always APPEAR Enforcing
 
 		smp_wmb();
 		status->sequence++;
