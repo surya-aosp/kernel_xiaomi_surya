@@ -48,19 +48,19 @@ jobs:
         run: |
           BUILD_DATE="$(date '+%H:%M %d/%m/%Y')"
           HEAD="$(git rev-parse HEAD)"
-          HEAD_COMMIT="https://github.com/rd-stuffs/msm-4.14/commit/$HEAD"
+          HEAD_COMMIT="https://github.com/rinnsakaguchi/kernel_xiaomi_surya/commits/devel/commit/$HEAD"
           echo -e "${BUILD_DATE}\n\n${HEAD_COMMIT}" > caption.txt
 
       - name: Upload standard build to Telegram
         run: |
           caption=$(<caption.txt)
-          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
-          -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+          curl -X POST "https://api.telegram.org/bot${{ 7485743487:AAEKPw9ubSKZKit9BDHfNJSTWcWax4STUZs }}/sendDocument" \
+          -F chat_id=${{ -1002354747626 }} \
           -F document=@"${{ env.ZIPNAME }}" \
           -F caption="${caption}"
 
       - name: Upload KSU build to Telegram
         run: |
-          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
-          -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+          curl -X POST "https://api.telegram.org/bot${{ 7485743487:AAEKPw9ubSKZKit9BDHfNJSTWcWax4STUZs }}/sendDocument" \
+          -F chat_id=${{ -1002354747626 }} \
           -F document=@"${{ env.ZIPNAME_KSU }}"
