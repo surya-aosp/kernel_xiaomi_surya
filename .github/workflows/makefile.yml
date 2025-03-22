@@ -54,13 +54,13 @@ jobs:
       - name: Upload standard build to Telegram
         run: |
           caption=$(<caption.txt)
-          curl -X POST "https://api.telegram.org/bot${{ 7485743487:AAEKPw9ubSKZKit9BDHfNJSTWcWax4STUZs }}/sendDocument" \
-          -F chat_id=${{ -1002354747626 }} \
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
+          -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
           -F document=@"${{ env.ZIPNAME }}" \
           -F caption="${caption}"
 
       - name: Upload KSU build to Telegram
         run: |
-          curl -X POST "https://api.telegram.org/bot${{ 7485743487:AAEKPw9ubSKZKit9BDHfNJSTWcWax4STUZs }}/sendDocument" \
-          -F chat_id=${{ -1002354747626 }} \
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
+          -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
           -F document=@"${{ env.ZIPNAME_KSU }}"
