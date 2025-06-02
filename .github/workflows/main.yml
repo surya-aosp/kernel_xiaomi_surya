@@ -1,4 +1,4 @@
-name: Build {sukiSU}
+name: Build Oplus
 on:
   workflow_dispatch:
 jobs:
@@ -19,10 +19,12 @@ jobs:
             sudo apt update -y
             sudo apt install bc cpio flex bison aptitude git python-is-python3 tar perl wget curl lz4 -y
             sudo aptitude install libssl-dev -y
+            sudo apt-get update
+            sudo apt-get install device-tree-compiler
         
     - name: Fetch Toolchains 
       run: |
-            mkdir clang && git clone --depth=1 -b 18.0.0 https://gitlab.com/TheXPerienceProject/yuki_clang "clang"
+            mkdir clang && curl https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/refs/heads/master/clang-r547379.tar.gz -RLO && tar -C clang/ -xf clang-*.tar.gz
             git clone --depth=1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 gcc64
             git clone --depth=1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 gcc32
                                     
@@ -34,7 +36,7 @@ jobs:
       run: |
             export ARCH=arm64
             export PATH="${PWD}/clang/bin:${PWD}gcc64/bin:${PWD}gcc32/bin:${PATH}"
-            export KBUILD_BUILD_USER=mahiroo
+            export KBUILD_BUILD_USER=mahirooo
             export KBUILD_BUILD_HOST=android-build
             export KBUILD_COMPILER_STRING="${PWD}/clang"           
             export LLVM=1 
@@ -54,7 +56,7 @@ jobs:
 
     - name: Fetch Anykernel3
       run: |
-            git clone --depth=1 https://github.com/Yuddciel/AnyKernel3.git -b FSociety AnyKernel3 
+            git clone --depth=1 https://github.com/Yuddciel/AnyKernel3.git -b FSociety AnyKernel3
             cp out/arch/arm64/boot/Image.gz AnyKernel3/Image.gz
             cp out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
             cp out/arch/arm64/boot/dtb.img AnyKernel3/dtb.img
