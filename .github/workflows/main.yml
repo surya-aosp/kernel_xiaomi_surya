@@ -19,8 +19,7 @@ jobs:
             sudo apt update -y
             sudo apt install bc cpio flex bison aptitude git python-is-python3 tar perl wget curl lz4 -y
             sudo aptitude install libssl-dev -y
-            sudo apt-get update
-            sudo apt-get install device-tree-compiler
+            sudo apt install device-tree-compiler -y
         
     - name: Fetch Toolchains 
       run: |
