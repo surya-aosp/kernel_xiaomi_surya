@@ -42,19 +42,19 @@ jobs:
             export CLANG_TRIPLE=aarch64-linux-gnu-
             export CROSS_COMPILE=aarch64-linux-android-
             export CROSS_COMPILE_ARM32=arm-linux-androideabi-             
-            make O=out sweet_defconfig 
+            make O=out surya_defconfig 
             make -j$(nproc --all) O=out CC=clang                   
-            mv out/.config out/sweet_defconfig.txt
+            mv out/.config out/surya_defconfig.txt
            
     - name: Upload defconfig 
       uses: actions/upload-artifact@v4
       with:
         name: defconfig-${{ env.BUILD_TIME }}
-        path: out/sweet_defconfig.txt
+        path: out/surya_defconfig.txt
 
     - name: Fetch Anykernel3
       run: |
-            git clone --depth=1 https://github.com/openBO-Tobrut/Anykernel3 -b main AnyKernel3 
+            git clone --depth=1 https://github.com/Yuddciel/AnyKernel3.git -b FSociety AnyKernel3 
             cp out/arch/arm64/boot/Image.gz AnyKernel3/Image.gz
             cp out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
             cp out/arch/arm64/boot/dtb.img AnyKernel3/dtb.img
@@ -62,5 +62,5 @@ jobs:
     - name: Upload Kernel
       uses: actions/upload-artifact@v4
       with:
-        name: Anykernel3-sweet-${{ env.BUILD_TIME }}
+        name: Anykernel3-surya-${{ env.BUILD_TIME }}
         path: AnyKernel3/*
