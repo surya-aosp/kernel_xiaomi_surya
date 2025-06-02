@@ -34,7 +34,7 @@ jobs:
       run: |
             export ARCH=arm64
             export PATH="${PWD}/clang/bin:${PWD}gcc64/bin:${PWD}gcc32/bin:${PATH}"
-            export KBUILD_BUILD_USER=nobody
+            export KBUILD_BUILD_USER=mahiroo
             export KBUILD_BUILD_HOST=android-build
             export KBUILD_COMPILER_STRING="${PWD}/clang"           
             export LLVM=1 
