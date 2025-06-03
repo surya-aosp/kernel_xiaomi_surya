@@ -3367,10 +3367,6 @@ struct mnt_namespace *copy_mnt_ns(unsigned long flags, struct mnt_namespace *ns,
 #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
 	// Always let clone_mnt() in copy_tree() know it is from copy_mnt_ns()
 	copy_flags |= CL_COPY_MNT_NS;
-	if (is_zygote_pid) {
-		// Let clone_mnt() in copy_tree() know copy_mnt_ns() is run by zygote process
-		copy_flags |= CL_ZYGOTE_COPY_MNT_NS;
-	}
 #endif
 	new = copy_tree(old, old->mnt.mnt_root, copy_flags);
 	if (IS_ERR(new)) {
