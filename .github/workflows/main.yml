@@ -1,4 +1,4 @@
-name: Build Oplus
+name: Build OPLUS
 on:
   workflow_dispatch:
 jobs:
@@ -38,11 +38,18 @@ jobs:
             export KBUILD_BUILD_USER=mahirooo
             export KBUILD_BUILD_HOST=android-build
             export KBUILD_COMPILER_STRING="${PWD}/clang"           
-            export LLVM=1 
+            export LD=ld.lld
+            export AS=llvm-as
+            export AR=llvm-ar
+            export NM=llvm-nm
+            export OBJCOPY=llvm-objcopy
+            export OBJDUMP=llvm-objdump
+            export STRIP=llvm-strip
+            export CROSS_COMPILE=aarch64-linux-gnu-
+            export CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
+            export LLVM=1
             export LLVM_IAS=1
-            export CLANG_TRIPLE=aarch64-linux-gnu-
-            export CROSS_COMPILE=aarch64-linux-android-
-            export CROSS_COMPILE_ARM32=arm-linux-androideabi-             
+            export DTC_EXT=dtc
             make O=out surya_defconfig 
             make -j$(nproc --all) O=out CC=clang                   
             mv out/.config out/surya_defconfig.txt
