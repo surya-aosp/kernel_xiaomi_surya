@@ -30,7 +30,11 @@ jobs:
     - name: Fetch SukiSU
       run: |
             curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
-                                                         
+
+    - name: Clean previous build
+      run: |
+           make clean && make mrproper
+
     - name: Build
       run: |
             export ARCH=arm64
