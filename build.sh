@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Compile script for Arise kernel
+# Compile script for Oplus kernel
 # Copyright (C) 2020-2021 Adithya R.
 
 SECONDS=0 # builtin bash timer
-ZIPNAME="Arise-Note-surya-$(date '+%Y%m%d-%H%M').zip"
+ZIPNAME="Oplus:[Wonderhoy]-surya-$(date '+%Y%m%d-%H%M').zip"
 TC_DIR="$(pwd)/tc/clang-yuki"
 AK3_DIR="$(pwd)/android/AnyKernel3"
 DEFCONFIG="surya_defconfig"
