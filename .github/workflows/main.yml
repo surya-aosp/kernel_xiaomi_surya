@@ -62,7 +62,7 @@ jobs:
 
     - name: Fetch Anykernel3
       run: |
-            git clone --depth=1 https://github.com/Yuddciel/AnyKernel3.git -b FSociety AnyKernel3
+            git clone --depth=1 https://github.com/rinnsakaguchi/AnyKernel3.git -b FSociety AnyKernel3
             cp out/arch/arm64/boot/Image.gz AnyKernel3/Image.gz
             cp out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
             cp out/arch/arm64/boot/dtb.img AnyKernel3/dtb.img
