@@ -1,0 +1,101 @@
+name: Build Kernel Wonderhoy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Surya Kernel
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Kernel Source
+        uses: actions/checkout@v3
+
+      - name: Set Up Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev python-is-python3 zip
+
+      - name: Run SukiSU Kernel Setup
+        run: |
+          curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
+
+      - name: Clone ZyC Clang
+        run: |
+          git clone --depth=1 https://github.com/ZyCromerZ/Clang.git -b main zyc-clang
+
+      - name: Set Environment Variables
+        run: |
+          echo "KERNEL_DEFCONFIG=surya_defconfig" >> $GITHUB_ENV
+          echo "TOOLCHAIN=$(pwd)/zyc-clang" >> $GITHUB_ENV
+          echo "PATH=$(pwd)/zyc-clang/bin:$PATH" >> $GITHUB_ENV
+          echo "BUILD_USER=mahirooo" >> $GITHUB_ENV
+          echo "BUILD_HOST=android-build" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date +%Y%m%d-%H%M)" >> $GITHUB_ENV
+
+      - name: Make Defconfig
+        run: |
+          make O=out ARCH=arm64 ${KERNEL_DEFCONFIG}
+
+      - name: Build Kernel
+        run: |
+          make -j$(nproc) O=out \
+            ARCH=arm64 \
+            LD=ld.lld \
+            AS=llvm-as
+            AR=llvm-ar \
+            NM=llvm-nm \
+            OBJCOPY=llvm-objcopy \
+            OBJDUMP=llvm-objdump \
+            STRIP=llvm-strip \
+            CROSS_COMPILE=aarch64-linux-gnu- \
+            CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+            CLANG_TRIPLE=aarch64-linux-gnu- \
+            LLVM=1 \
+            LLVM_IAS=1 \
+            DTC_EXT=dtc \
+            KBUILD_COMPILER_STRING="${PWD}/clang" \
+            KBUILD_BUILD_USER=${BUILD_USER} \
+            KBUILD_BUILD_HOST=${BUILD_HOST}
+
+      - name: Check Kernel Output Files
+        run: |
+          [[ -f out/arch/arm64/boot/Image.gz ]] || { echo "❌ Missing Image.gz"; exit 1; }
+          [[ -f out/arch/arm64/boot/dtbo.img ]]  || { echo "❌ Missing dtbo.img"; exit 1; }
+          [[ -f out/arch/arm64/boot/dtb.img ]]   || { echo "❌ Missing dtb.img"; exit 1; }
+
+      - name: Fetch AnyKernel3 and Package
+        run: |
+          git clone --depth=1 https://github.com/rinnsakaguchi/AnyKernel3.git -b FSociety AnyKernel3
+          cp out/arch/arm64/boot/Image.gz AnyKernel3/Image.gz
+          cp out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
+          cp out/arch/arm64/boot/dtb.img AnyKernel3/dtb.img
+          cd AnyKernel3
+          zip -r9 ../Surya-Kernel-${{ env.BUILD_TIME }}.zip ./*
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          echo 'CHANGELOG<<EOF' >> $GITHUB_ENV
+          git log -n 10 --pretty=format:"• %s (%an)" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Upload Kernel ZIP to GitHub Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Surya-Kernel-${{ env.BUILD_TIME }}-mahirooo
+          path: Surya-Kernel-${{ env.BUILD_TIME }}.zip
+
+      - name: Send Build to Telegram
+        run: |
+          curl -F document=@Surya-Kernel-${{ env.BUILD_TIME }}.zip \
+               -F caption="✅ *Build Success*
+📱 *Device*: Surya
+⚙️ *Compiler*: ZyC Clang
+👤 *Builder*: mahirooo
+🕒 *Time*: ${{ env.BUILD_TIME }}
+
+${{ env.CHANGELOG }}" \
+               -F parse_mode=Markdown \
+               "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument?chat_id=${{ secrets.TELEGRAM_CHAT_ID }}"
