@@ -89,13 +89,12 @@ jobs:
 
       - name: Send Build to Telegram
         run: |
-          curl -F document=@Surya-Kernel-${{ env.BUILD_TIME }}.zip \
-               -F caption="✅ *Build Success*
-📱 *Device*: Surya
-⚙️ *Compiler*: ZyC Clang
+  curl -s -X POST \
+       -F document=@output.zip \
+       -F caption="⚙️ *Compiler*: ZyC Clang
 👤 *Builder*: mahirooo
 🕒 *Time*: ${{ env.BUILD_TIME }}
 
 ${{ env.CHANGELOG }}" \
-               -F parse_mode=Markdown \
-               "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument?chat_id=${{ secrets.TELEGRAM_CHAT_ID }}"
+       -F parse_mode=Markdown \
+       "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument?chat_id=${{ secrets.TELEGRAM_CHAT_ID }}"
