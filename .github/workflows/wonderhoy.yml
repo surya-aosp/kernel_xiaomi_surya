@@ -43,7 +43,7 @@ jobs:
           make -j$(nproc) O=out \
             ARCH=arm64 \
             LD=ld.lld \
-            AS=llvm-as
+            AS=llvm-as \
             AR=llvm-ar \
             NM=llvm-nm \
             OBJCOPY=llvm-objcopy \
@@ -75,11 +75,12 @@ jobs:
           zip -r9 ../Surya-Kernel-${{ env.BUILD_TIME }}.zip ./*
 
       - name: Generate Changelog
-        id: changelog
         run: |
-          echo 'CHANGELOG<<EOF' >> $GITHUB_ENV
-          git log -n 10 --pretty=format:"• %s (%an)" >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+          {
+            echo "CHANGELOG<<EOF"
+            git log -n 10 --pretty=format:"• %s (%an)"
+            echo "EOF"
+          } >> $GITHUB_ENV
 
       - name: Upload Kernel ZIP to GitHub Artifact
         uses: actions/upload-artifact@v4
@@ -89,12 +90,12 @@ jobs:
 
       - name: Send Build to Telegram
         run: |
-  curl -s -X POST \
-       -F document=@output.zip \
-       -F caption="⚙️ *Compiler*: ZyC Clang
+          curl -F document=@Surya-Kernel-${{ env.BUILD_TIME }}.zip \
+          -F caption="✅ *Build Success*
+📱 *Device*: Surya
+⚙️ *Compiler*: ZyC Clang
 👤 *Builder*: mahirooo
 🕒 *Time*: ${{ env.BUILD_TIME }}
-
 ${{ env.CHANGELOG }}" \
-       -F parse_mode=Markdown \
-       "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument?chat_id=${{ secrets.TELEGRAM_CHAT_ID }}"
+          -F parse_mode=Markdown \
+          "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument?chat_id=${{ secrets.TELEGRAM_CHAT_ID }}"
