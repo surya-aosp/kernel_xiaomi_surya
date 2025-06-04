@@ -72,7 +72,7 @@ jobs:
           cp out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
           cp out/arch/arm64/boot/dtb.img AnyKernel3/dtb.img
           cd AnyKernel3
-          zip -r9 ../Surya-Kernel-${{ env.BUILD_TIME }}.zip ./*
+          zip -r9 ../Wonderhoy-Kernel-${{ env.BUILD_TIME }}.zip ./*
 
       - name: Generate Changelog
         run: |
@@ -91,11 +91,6 @@ jobs:
       - name: Send Build to Telegram
         run: |
           curl -F document=@Surya-Kernel-${{ env.BUILD_TIME }}.zip \
-          -F caption="✅ *Build Success*
-📱 *Device*: Surya
-⚙️ *Compiler*: ZyC Clang
-👤 *Builder*: mahirooo
-🕒 *Time*: ${{ env.BUILD_TIME }}
-${{ env.CHANGELOG }}" \
+          -F caption="✅ *Build Success*\n📱 *Device*: Surya\n⚙️ *Compiler*: ZyC Clang\n👤 *Builder*: mahirooo\n🕒 *Time*: ${{ env.BUILD_TIME }}\n${{ env.CHANGELOG }}" \
           -F parse_mode=Markdown \
           "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument?chat_id=${{ secrets.TELEGRAM_CHAT_ID }}"
