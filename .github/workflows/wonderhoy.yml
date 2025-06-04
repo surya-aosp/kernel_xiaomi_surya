@@ -1,4 +1,4 @@
-name: Build Kernel Wonderhoy
+name: Build Kernel
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
 
       - name: Clone ZyC Clang
         run: |
-          mkdir zyc-clang && git clone https://github.com/ZyCromerZ/Clang/releases/download/21.0.0git-20250203-release/Clang-21.0.0git-20250203.tar.gz -RLO && tar -C zyc-clang/ -xf clang-*.tar.gz
+          mkdir zyc-clang && curl https://github.com/ZyCromerZ/Clang/releases/download/21.0.0git-20250604-release/Clang-21.0.0git-20250604.tar.gz -RLO && tar -C zyc-clang/ -xf clang-*.tar.gz
 
       - name: Set Environment Variables
         run: |
