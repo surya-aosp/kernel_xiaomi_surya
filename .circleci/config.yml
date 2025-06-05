@@ -7,7 +7,7 @@ jobs:
       - run:
           no_output_timeout: 50m
           command: |
-           git https://github.com/rinnsakaguchi/jablay -b personal kernel 
+           git clone https://github.com/rinnsakaguchi/jablay -b personal kernel
            cd kernel
            git clone https://github.com/rinnsakaguchi/myscripts -b master
            chmod +x myscripts/clang-setup.sh
