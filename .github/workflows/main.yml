@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Build Surya Kernel
-    runs-on: buildjet-32vcpu-ubuntu-2204
+    runs-on: buildjet-64vcpu-ubuntu-2204
 
     env:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
