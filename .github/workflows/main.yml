@@ -1,4 +1,4 @@
-name: Build 32vcpu ARM
+name: Use RvClang
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Build Surya Kernel
-    runs-on: buildjet-32vcpu-ubuntu-2204-arm
+    runs-on: buildjet-32vcpu-ubuntu-2204
 
     env:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -33,11 +33,11 @@ jobs:
         run: |
           curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
 
-      - name: Clone ZyC Clang
+      - name: Clone RvClang
         run: |
           mkdir RvClang
           curl -LO https://github.com/Rv-Project/RvClang/releases/download/20.1.0/RvClang-20.1.0-bolt-pgo-full_lto.tar.gz
-          tar -C RvClang/ -xf rvclang.tar.gz
+          tar -C RvClang/ -xf RvClang-20.1.0-bolt-pgo-full_lto.tar.gz
 
       - name: Set Environment Variables
         run: |
