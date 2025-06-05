@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Build Surya Kernel
-    runs-on: buildjet-64vcpu-ubuntu-2204
+    runs-on: buildjet-16vcpu-ubuntu-2204
 
     env:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -33,23 +33,21 @@ jobs:
         run: |
           curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
 
-      - name: Clone RvClang
+      - name: Clone Clang
         run: |
-          wget -qO rvclang.tar.gz https://github.com/Rv-Project/RvClang/releases/download/20.1.0/RvClang-20.1.0-bolt-pgo-full_lto.tar.gz && tar -xzf rvclang.tar.gz && rm -f rvclang.tar.gz && mv RvClang clang
-          export PATH="clang/bin:$PATH"
-
+          git clone --single-branch --depth=1 https://github.com/kdrag0n/proton-clang $(pwd)
       - name: Set Environment Variables
         run: |
           echo "KERNEL_DEFCONFIG=surya_defconfig" >> $GITHUB_ENV
-          echo "TOOLCHAIN=$(pwd)/Clang" >> $GITHUB_ENV
-          echo "PATH=$(pwd)/Clang/bin:$PATH" >> $GITHUB_ENV
+          echo "TOOLCHAIN=$(pwd)/toolchains/proton-clang" >> $GITHUB_ENV
+          echo "PATH=$(pwd)/toolchains/proton-clang/bin:$PATH" >> $GITHUB_ENV
           echo "BUILD_USER=mahirooo" >> $GITHUB_ENV
           echo "BUILD_HOST=android-build" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date +%Y%m%d-%H%M)" >> $GITHUB_ENV
 
       - name: Send Telegram Notification - Build Started
         run: |
-             CLANG_VER=$(./Clang/bin/clang --version | head -n 1)
+             CLANG_VER=$(./toolchains/proton-clang/bin/clang --version | head -n 1)
              curl -s -X POST https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage \
              -d chat_id=${TELEGRAM_CHAT_ID} \
              -d text="🚀 *Build Dimulai!* | *Clang*: ${CLANG_VER}" \
@@ -75,9 +73,6 @@ jobs:
             STRIP=llvm-strip \
             CROSS_COMPILE=aarch64-linux-gnu- \
             CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
-            CLANG_TRIPLE=aarch64-linux-gnu- \
-            LLVM=1 \
-            LLVM_IAS=1 \
             DTC_EXT=dtc \
             KBUILD_COMPILER_STRING="${PWD}/clang" \
             KBUILD_BUILD_USER=${BUILD_USER} \
