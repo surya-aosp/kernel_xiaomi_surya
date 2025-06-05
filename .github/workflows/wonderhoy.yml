@@ -53,7 +53,7 @@ jobs:
           CLANG_VER=$(./zyc-clang/bin/clang --version | head -n 1)
           curl -s -X POST https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage \
             -d chat_id=${TELEGRAM_CHAT_ID} \
-            -d text="🚀 *Build Dimulai!*\n📱 *Device*: Surya\n🔧 *Clang*: ${CLANG_VER}\n🛠️ *Command*: make -j\$(nproc)\n🕒 *Waktu*: ${{ env.BUILD_TIME }}" \
+            -d text="🚀 *Build Dimulai!* | *Clang*: ${CLANG_VER} \
             -d parse_mode=Markdown
       
       - name: Set Build Start Time
@@ -136,6 +136,6 @@ jobs:
       - name: Send Build to Telegram
         run: |
           curl -F document=@Surya-Kernel-${{ env.BUILD_TIME }}.zip \
-          -F caption="✅ *Build Success*\n📱 *Device*: Surya\n⚙️ *Compiler*: ZyC Clang\n👤 *Builder*: mahirooo\n🕒 *Time*: ${{ env.BUILD_TIME }}\n${{ env.CHANGELOG }}" \
+          -F caption="${{ env.CHANGELOG }}" \
           -F parse_mode=Markdown \
           "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument?chat_id=${{ secrets.TELEGRAM_CHAT_ID }}"
