@@ -1,4 +1,4 @@
-name: Build Kernel
+name: Build 32vcpu ARM
 
 on:
   workflow_dispatch:
