@@ -1,0 +1,52 @@
+version: 2.1
+
+executors:
+  buildjet-arm:
+    machine:
+      image: ubuntu-2204:2023.10.1
+    resource_class: arm.large
+
+parameters:
+  telegram_bot_token:
+    type: string
+    default: ""
+  telegram_chat_id:
+    type: string
+    default: ""
+
+jobs:
+  build_kernel:
+    executor: mahiroo
+    environment:
+      TELEGRAM_BOT_TOKEN: << pipeline.parameters.telegram_bot_token >>
+      TELEGRAM_CHAT_ID: << pipeline.parameters.telegram_chat_id >>
+    steps:
+      - checkout
+
+      - run:
+          name: Prepare Timezone
+          command: |
+            echo "BUILD_TIME=$(TZ=Asia/Jakarta date '+%d%m%Y-%H%M')" >> build.env
+            sudo rm /etc/localtime
+            sudo ln -s /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+
+      - run:
+          name: Set Up Dependencies
+          command: |
+            sudo apt update -y
+            sudo apt install bc cpio flex bison aptitude git python-is-python3 tar perl wget curl lz4 -y
+            sudo aptitude install libssl-dev -y
+            sudo apt install device-tree-compiler -y
+
+      - run:
+          name: Run SukiSU Kernel Setup
+          command: |
+            curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel.sh" | bash
+
+workflows:
+  version: 2
+  build_kernel_workflow:
+    jobs:
+      - build_kernel:
+          telegram_bot_token: << pipeline.parameters.telegram_bot_token >>
+          telegram_chat_id: << pipeline.parameters.telegram_chat_id >>
