@@ -12,10 +12,18 @@ jobs:
       - name: Checkout Kernel Source
         uses: actions/checkout@v3
 
+      - name: Prepare timezone 
+        run: |
+            echo "BUILD_TIME=$(TZ=Asia/Jakarta date "+%d%m%Y-%H%M")" >> $GITHUB_ENV
+            sudo rm /etc/localtime
+            sudo ln -s /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+
       - name: Set Up Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev python-is-python3 zip
+            sudo apt update -y
+            sudo apt install bc cpio flex bison aptitude git python-is-python3 tar perl wget curl lz4 -y
+            sudo aptitude install libssl-dev -y
+            sudo apt install device-tree-compiler -y
 
       - name: Run SukiSU Kernel Setup
         run: |
