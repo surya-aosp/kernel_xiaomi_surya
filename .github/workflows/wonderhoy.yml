@@ -108,7 +108,7 @@ jobs:
           cp out/arch/arm64/boot/dtb.img AnyKernel3/dtb.img
           cd AnyKernel3
           zip -r9 ../Surya-Kernel-${{ env.BUILD_TIME }}.zip ./*
-      
+
       - name: Calculate Build Duration
         run: |
           BUILD_END=$(date +%s)
@@ -124,7 +124,8 @@ jobs:
             echo "⏱️ Duration: ${{ env.BUILD_DURATION }}"
             git log -n 10 --pretty=format:"• %s (%an)"
             echo "EOF"
-          } >> $GITHUB_ENV
+          } > changelog.txt
+          cat changelog.txt >> $GITHUB_ENV
 
       - name: Upload Kernel ZIP to GitHub Artifact
         uses: actions/upload-artifact@v4
